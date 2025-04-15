@@ -5,7 +5,8 @@ PATH_PROJECT_DIR = Path(__file__).resolve().parents[1]
 PATH_KEYWORDS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'final_keywords_v2_final_no_mm.xlsx')
 PATH_FAKE_FINAL_POSTS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'fake_final_posts.csv')
 PATH_PROJECT_DATA_FIREARMS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms')
-PATH_FINAL_REPORTS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'final_posts_with_organized_keywords.csv')
+PATH_FINAL_REPORTS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'final_all_posts_with_matches.csv')
+PATH_FINAL_FILTERED_OUTPUT_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'lms_boolean_true_both_group_5.csv')
 
 
 def load_and_merge_csv_files():

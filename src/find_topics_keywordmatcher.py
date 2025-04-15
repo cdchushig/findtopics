@@ -1,10 +1,10 @@
 import pandas as pd
 import csv
 import re
-import unicodedata
 import time
 from datetime import timedelta
 from nltk.stem import WordNetLemmatizer, PorterStemmer
+import unicodedata
 from tqdm import tqdm
 tqdm.pandas()  # Enables progress bar with .progress_apply()
 
@@ -16,20 +16,37 @@ stemmer = PorterStemmer()
 keywords_file = "LMS Keywords v3.2 Reddit FINAL.xlsx"
 terms_df = pd.read_excel(keywords_file, sheet_name="terms")
 
-# Function to extract terms
+
+def lemmatize_text(text):
+    return " ".join([lemmatizer.lemmatize(word) for word in text.split()])
+
+
+def stem_text(text):
+    return " ".join([
+        word if stemmer.stem(word) == "of" else stemmer.stem(word)
+        for word in text.split()
+    ])
+
+
 def extract_terms(terms):
     return [term.lower() for term in terms.dropna().astype(str)]
 
-# Function to lemmatize phrases
+
 def lemmatize_terms(term_list):
+    """
+    Function to lemmatize phrases
+    """
     lemmatized_list = []
     for term in term_list:
         lemmatized_term = " ".join([lemmatizer.lemmatize(word) for word in term.split()])
         lemmatized_list.append(lemmatized_term)
     return lemmatized_list
 
-# Function to stem phrases
+
 def stem_terms(term_list):
+    """
+    Function to stem phrases
+    """
     stemmed_list = []
     for term in term_list:
         stemmed_phrase = " ".join([
@@ -39,13 +56,17 @@ def stem_terms(term_list):
         stemmed_list.append(stemmed_phrase)
     return stemmed_list
 
-# Clean text by normalizing and removing accents
+
 def clean_text(text):
+    """
+    Clean text by normalizing and removing accents
+    """
     if isinstance(text, str):
         text = unicodedata.normalize("NFKD", text)
         text = ''.join([c for c in text if not unicodedata.combining(c)])
         return text.strip()
     return text
+
 
 # Load search terms
 fire_terms = extract_terms(terms_df["firearm_terms"])
@@ -66,16 +87,6 @@ print(f"Number of rows before processing: {len(posts_df)}")
 # Clean title/selftext
 posts_df["title"] = posts_df["title"].fillna("").astype(str).str.lower().apply(clean_text)
 posts_df["selftext"] = posts_df["selftext"].fillna("").astype(str).str.lower().apply(clean_text)
-
-# Lemmatize and stem text
-def lemmatize_text(text):
-    return " ".join([lemmatizer.lemmatize(word) for word in text.split()])
-
-def stem_text(text):
-    return " ".join([
-        word if stemmer.stem(word) == "of" else stemmer.stem(word)
-        for word in text.split()
-    ])
 
 posts_df["lemmatized_title"] = posts_df["title"].apply(lemmatize_text)
 posts_df["lemmatized_selftext"] = posts_df["selftext"].apply(lemmatize_text)
