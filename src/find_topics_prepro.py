@@ -124,13 +124,12 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
     print(f"Number of rows before processing: {len(posts_df)}")
 
     # Clean title/selftext
-    posts_df["title"] = posts_df["title"].fillna("").astype(str).str.lower().swifter.apply(clean_text)
-    posts_df["selftext"] = posts_df["selftext"].fillna("").astype(str).str.lower().swifter.apply(clean_text)
-
-    posts_df["lemmatized_title"] = posts_df["title"].swifter.apply(lemmatize_text)
-    posts_df["lemmatized_selftext"] = posts_df["selftext"].swifter.apply(lemmatize_text)
-    posts_df["stemmed_title"] = posts_df["title"].swifter.apply(stem_text)
-    posts_df["stemmed_selftext"] = posts_df["selftext"].swifter.apply(stem_text)
+    posts_df["title"] = posts_df["title"].fillna("").astype(str).str.lower().swifter.allow_dask_on_strings(enable=True).apply(clean_text)
+    posts_df["selftext"] = posts_df["selftext"].fillna("").astype(str).str.lower().swifter.allow_dask_on_strings(enable=True).apply(clean_text)
+    posts_df["lemmatized_title"] = posts_df["title"].swifter.allow_dask_on_strings(enable=True).apply(lemmatize_text)
+    posts_df["lemmatized_selftext"] = posts_df["selftext"].swifter.allow_dask_on_strings(enable=True).apply(lemmatize_text)
+    posts_df["stemmed_title"] = posts_df["title"].swifter.allow_dask_on_strings(enable=True).apply(stem_text)
+    posts_df["stemmed_selftext"] = posts_df["selftext"].swifter.allow_dask_on_strings(enable=True).apply(stem_text)
 
     # Output filenames
     output_file = PATH_FINAL_REPORTS_FILE
@@ -168,20 +167,22 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
         #     axis=1,
         # )
 
-        posts_df[f"{match_type}_firearm_matches"] = posts_df.swifter.apply(
+        posts_df[f"{match_type}_firearm_matches"] = posts_df.swifter.allow_dask_on_strings(enable=True).apply(
             lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], fire_list),
             axis=1,
         )
-        posts_df[f"{match_type}_suicide_matches"] = posts_df.swifter.apply(
+        posts_df[f"{match_type}_suicide_matches"] = posts_df.swifter.allow_dask_on_strings(enable=True).apply(
             lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], suicide_list),
             axis=1,
 
         )
 
-        posts_df[f"{match_type}_firearm_match_summary"] = posts_df[f"{match_type}_firearm_matches"].swifter.apply(
+        posts_df[f"{match_type}_firearm_match_summary"] = posts_df[f"{match_type}_firearm_matches"]\
+            .swifter.allow_dask_on_strings(enable=True).apply(
             lambda x: ", ".join(x) if x else ""
         )
-        posts_df[f"{match_type}_suicide_match_summary"] = posts_df[f"{match_type}_suicide_matches"].swifter.apply(
+        posts_df[f"{match_type}_suicide_match_summary"] = posts_df[f"{match_type}_suicide_matches"]\
+            .swifter.allow_dask_on_strings(enable=True).apply(
             lambda x: ", ".join(x) if x else ""
         )
 

@@ -26,17 +26,6 @@ def split_save_data_by_topics(df: pd.DataFrame, therapy_name: str, language: str
         )
 
 
-# def create_years_loop(list_therapy_ids: list, language: str):
-#     for dataset_name in list_therapy_ids:
-#         dataset_id = get_dataset_id(dataset_name)
-#         path_dataset = Path.joinpath(consts.PATH_PROJECT_DATA_PSYCHOTHERAPY, '{}_{}.csv'.format(dataset_id, language))
-#         df = pd.read_csv(str(path_dataset))
-#         df.drop_duplicates()
-#         df = df.reset_index(drop=True)
-#         pathx = str(os.path.join(consts.PATH_PROJECT_REPORTS_PSYCHOTHERAPY, 'csvs'))
-#         create_years(df, pathx, language, '')
-
-
 def split_data_per_topics(list_therapy_names: list, list_datasets: list, language: str, flag_save_data: bool = False):
 
     list_therapy_topics = []
