@@ -290,7 +290,7 @@ def parse_arguments(parser):
 parser = argparse.ArgumentParser(description='topic modeler')
 args = parse_arguments(parser)
 
-os.environ["NUMEXPR_MAX_THREADS"] = args.n_jobs
+os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
 dask.config.set(scheduler='threads', num_workers=args.n_jobs)
 
 
