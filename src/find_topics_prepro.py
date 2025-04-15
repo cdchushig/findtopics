@@ -293,7 +293,6 @@ args = parse_arguments(parser)
 os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
 dask.config.set(scheduler='threads', num_workers=args.n_jobs)
 
-
 if args.merge_data:
     load_and_merge_csv_files()
 
