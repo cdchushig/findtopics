@@ -7,6 +7,8 @@ import re
 import csv
 import unicodedata
 from tqdm import tqdm
+from pandarallel import pandarallel
+pandarallel.initialize(progress_bar=True, nb_workers=4)  # You can adjust workers
 from find_topics_utils import load_merged_dataset, load_and_merge_csv_files
 from find_topics_utils import PATH_KEYWORDS_FILE, PATH_FINAL_REPORTS_FILE, PATH_FINAL_FILTERED_OUTPUT_FILE
 tqdm.pandas()  # Enables progress bar with .progress_apply()
@@ -103,7 +105,10 @@ def clean_text(text):
     return text
 
 
-def preprocessing_key_terms_v2(posts_df: pd.DataFrame, terms_df: pd.DataFrame, column_name_post: str = 'text'):
+def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
+                               terms_df: pd.DataFrame,
+                               column_name_post: str = 'text',
+                               n_jobs=1):
     fire_terms = extract_terms(terms_df["firearm_terms"])
     suicide_terms = extract_terms(terms_df["suicide_terms"])
     lemmatized_fire_terms = lemmatize_terms(fire_terms)
@@ -152,6 +157,8 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame, terms_df: pd.DataFrame, c
             selftext_col = "stemmed_selftext"
             fire_list = stemmed_fire_terms
             suicide_list = stemmed_suicide_terms
+
+        pandarallel.initialize(progress_bar=True, nb_workers=n_jobs)
 
         posts_df[f"{match_type}_firearm_matches"] = posts_df.progress_apply(
             lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], fire_list),
@@ -267,6 +274,7 @@ def preprocessing_key_terms_v1(posts_df: pd.DataFrame, terms_df: pd.DataFrame, c
 
 def parse_arguments(parser):
     parser.add_argument('--merge_data', default=False, type=bool)
+    parser.add_argument('--n_jobs', default=1, type=int)
     return parser.parse_args()
 
 
@@ -281,7 +289,7 @@ df = load_merged_dataset()
 
 # Load keywords from Excel
 terms_df = pd.read_excel(PATH_KEYWORDS_FILE, sheet_name="terms")
-preprocessing_key_terms_v2(df, terms_df)
+preprocessing_key_terms_v2(df, terms_df, n_jobs=args.n_jobs)
 
 # posts_df = preprocessing_key_terms_v1(df, terms_df)
 # Save the updated dataset
