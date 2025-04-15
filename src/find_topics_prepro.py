@@ -113,6 +113,7 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame, terms_df: pd.DataFrame, c
 
     posts_df.columns = posts_df.columns.str.lower()
     posts_df.rename(columns={column_name_post: 'selftext'}, inplace=True)
+    posts_df["title"] = ""
 
     print(f"Number of rows before processing: {len(posts_df)}")
 
@@ -265,7 +266,7 @@ def preprocessing_key_terms_v1(posts_df: pd.DataFrame, terms_df: pd.DataFrame, c
 
 
 def parse_arguments(parser):
-    parser.add_argument('--merge_data', default=True, type=bool)
+    parser.add_argument('--merge_data', default=False, type=bool)
     return parser.parse_args()
 
 
