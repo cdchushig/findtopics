@@ -193,7 +193,7 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
         # Export after each pass
         posts_df.to_csv(
             output_file,
-            encoding="latin1",
+            encoding='utf-8',
             index=False,
             quoting=csv.QUOTE_MINIMAL,
             sep=",",
@@ -215,7 +215,7 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
 
     filtered_df.to_csv(
         filtered_output_file,
-        encoding="latin1",
+        encoding='utf-8',
         index=False,
         quoting=csv.QUOTE_MINIMAL,
         sep=",",
