@@ -4,7 +4,6 @@ __pycache__
 *.so
 *.pyd
 .idea/*
-venv/
 *.csv
 *.pth
 *.zip
@@ -20,6 +19,7 @@ venv/
 *.ipynb
 *.xml
 
+venv311/
 data/
 reports/
 venv38/
