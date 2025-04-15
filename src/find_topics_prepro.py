@@ -7,8 +7,9 @@ import re
 import csv
 import unicodedata
 from tqdm import tqdm
-from pandarallel import pandarallel
-pandarallel.initialize(progress_bar=True, nb_workers=4)  # You can adjust workers
+import os
+import dask
+import swifter
 from find_topics_utils import load_merged_dataset, load_and_merge_csv_files
 from find_topics_utils import PATH_KEYWORDS_FILE, PATH_FINAL_REPORTS_FILE, PATH_FINAL_FILTERED_OUTPUT_FILE
 tqdm.pandas()  # Enables progress bar with .progress_apply()
@@ -158,21 +159,29 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
             fire_list = stemmed_fire_terms
             suicide_list = stemmed_suicide_terms
 
-        pandarallel.initialize(progress_bar=True, nb_workers=n_jobs)
+        # posts_df[f"{match_type}_firearm_matches"] = posts_df.progress_apply(
+        #     lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], fire_list),
+        #     axis=1,
+        # )
+        # posts_df[f"{match_type}_suicide_matches"] = posts_df.progress_apply(
+        #     lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], suicide_list),
+        #     axis=1,
+        # )
 
-        posts_df[f"{match_type}_firearm_matches"] = posts_df.progress_apply(
+        posts_df[f"{match_type}_firearm_matches"] = posts_df.swifter.apply(
             lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], fire_list),
             axis=1,
         )
-        posts_df[f"{match_type}_suicide_matches"] = posts_df.progress_apply(
+        posts_df[f"{match_type}_suicide_matches"] = posts_df.swifter.apply(
             lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], suicide_list),
             axis=1,
+
         )
 
-        posts_df[f"{match_type}_firearm_match_summary"] = posts_df[f"{match_type}_firearm_matches"].apply(
+        posts_df[f"{match_type}_firearm_match_summary"] = posts_df[f"{match_type}_firearm_matches"].swifter.apply(
             lambda x: ", ".join(x) if x else ""
         )
-        posts_df[f"{match_type}_suicide_match_summary"] = posts_df[f"{match_type}_suicide_matches"].apply(
+        posts_df[f"{match_type}_suicide_match_summary"] = posts_df[f"{match_type}_suicide_matches"].swifter.apply(
             lambda x: ", ".join(x) if x else ""
         )
 
@@ -280,6 +289,10 @@ def parse_arguments(parser):
 
 parser = argparse.ArgumentParser(description='topic modeler')
 args = parse_arguments(parser)
+
+os.environ["NUMEXPR_MAX_THREADS"] = args.n_jobs
+dask.config.set(scheduler='threads', num_workers=args.n_jobs)
+
 
 if args.merge_data:
     load_and_merge_csv_files()
