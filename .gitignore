@@ -13,12 +13,9 @@ venv/
 *.png
 *.pdf
 *.jpeg
-data/.
-reports/.
 *.xlsx
 *.pk
 *.pt
-*.txt
 *.npy
 *.ipynb
 *.xml
