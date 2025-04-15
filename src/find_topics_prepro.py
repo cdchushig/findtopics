@@ -288,22 +288,23 @@ def parse_arguments(parser):
     return parser.parse_args()
 
 
-parser = argparse.ArgumentParser(description='topic modeler')
-args = parse_arguments(parser)
+def main():
+    parser = argparse.ArgumentParser(description='topic modeler')
+    args = parse_arguments(parser)
 
-os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
-dask.config.set(scheduler='threads', num_workers=args.n_jobs)
+    os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
+    dask.config.set(scheduler='threads', num_workers=args.n_jobs)
 
-if args.merge_data:
-    load_and_merge_csv_files()
+    if args.merge_data:
+        load_and_merge_csv_files()
 
-# Loading raw data
-df = load_merged_dataset()
+    # Loading raw data
+    df = load_merged_dataset()
 
-# Load keywords from Excel
-terms_df = pd.read_excel(PATH_KEYWORDS_FILE, sheet_name="terms")
-preprocessing_key_terms_v2(df, terms_df, n_jobs=args.n_jobs)
+    # Load keywords from Excel
+    terms_df = pd.read_excel(PATH_KEYWORDS_FILE, sheet_name="terms")
+    preprocessing_key_terms_v2(df, terms_df, n_jobs=args.n_jobs)
 
-# posts_df = preprocessing_key_terms_v1(df, terms_df)
-# Save the updated dataset
-# posts_df.to_csv(PATH_FINAL_REPORTS_FILE, index=False, encoding='utf-8', quotechar='"', quoting=csv.QUOTE_ALL)
+    # posts_df = preprocessing_key_terms_v1(df, terms_df)
+    # Save the updated dataset
+    # posts_df.to_csv(PATH_FINAL_REPORTS_FILE, index=False, encoding='utf-8', quotechar='"', quoting=csv.QUOTE_ALL)
