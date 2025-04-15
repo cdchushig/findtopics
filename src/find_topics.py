@@ -134,12 +134,12 @@ if args.load_preprocessed_dataset:
         df_keywords_report["regular_suicide_match_summary"].notna()
     ]
 
-    filtered_ids = df_post_filtered["id"]
+    # filtered_ids = df_post_filtered["id"]
+    filtered_ids = df_firearm["id"]
 
     # Filter posts
     df_raw = load_merged_dataset()
-    df = df_raw.copy()
-    # df = df_raw[df_raw["id"].isin(filtered_ids)]
+    df = df_raw[df_raw["id"].isin(filtered_ids)]
     print('Raw data, number of posts: ', df_raw.shape)
     print('Filtered data: number of posts', df_post_filtered.shape)
     print('Firearm data: number of posts', df_firearm.shape)

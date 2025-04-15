@@ -604,7 +604,8 @@ def load_list_datasets_addictions(dataset_name, language, type_data, unique_lang
     # return df_data
 
 
-def plot_temporal_evolution_tweets(list_therapy_names: list,
+def plot_temporal_evolution_tweets(df_data: pd.DataFrame,
+                                   list_therapy_names: list,
                                    language: str,
                                    project: str,
                                    dataset_name: str,
@@ -616,10 +617,10 @@ def plot_temporal_evolution_tweets(list_therapy_names: list,
                                    show_legend: bool = False
                                    ):
 
-    if project == 'psyco':
+    # if project == 'psyco':
         df_data = load_list_datasets_psycotherapy(list_therapy_names, language)
-    else:
-        df_data = load_list_datasets_addictions(dataset_name, language, type_data, unique_language)
+    # else:
+    #     df_data = load_list_datasets_addictions(dataset_name, language, type_data, unique_language)
 
     sns.set_style('ticks')
     plt.rcParams.update({'font.size': 15})
