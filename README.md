@@ -6,9 +6,9 @@ findtopics
 export $(cat .venv) 
 ```
 
-### Train topic models
+### Train models for finding topics
 ```console
-python src/topics.py --language='catalan' --dataset='prg' --min_samples=100 --min_cluster_size=2000 --cluster_selection_epsilon=0.5 --stop_words='ca'
+python src/find_topics.py --language='english' --dataset='firearms' --min_samples=1000 --min_cluster_size=10000 --cluster_selection_epsilon=0.5 --stop_words='en'
 ```
 
 ### Visualize results of topics
