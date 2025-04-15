@@ -127,11 +127,11 @@ except LookupError:
 if args.load_preprocessed_dataset:
     df_keywords_report = pd.read_csv(PATH_FINAL_REPORTS_FILE)
     df_firearm = df_keywords_report[df_keywords_report["regular_firearm_matches"].notna()]
-    df_suicide = df_keywords_report[df_keywords_report["regular_suicides_matches"].notna()]
+    df_suicide = df_keywords_report[df_keywords_report["regular_suicide_matches"].notna()]
 
     df_post_filtered = df_keywords_report[
         df_keywords_report["regular_firearm_matches"].notna() &
-        df_keywords_report["regular_suicides_matches"].notna()
+        df_keywords_report["regular_suicide_matches"].notna()
     ]
 
     filtered_ids = df_post_filtered["id"]
