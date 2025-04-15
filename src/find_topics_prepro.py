@@ -288,10 +288,11 @@ def parse_arguments(parser):
     return parser.parse_args()
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='topic modeler')
     args = parse_arguments(parser)
 
+    # multiprocessing.freeze_support()  # optional but safe
     os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
     dask.config.set(scheduler='threads', num_workers=args.n_jobs)
 
