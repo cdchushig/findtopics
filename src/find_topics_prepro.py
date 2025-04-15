@@ -124,13 +124,13 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
     print(f"Number of rows before processing: {len(posts_df)}")
 
     # Clean title/selftext
-    posts_df["title"] = posts_df["title"].fillna("").astype(str).str.lower().apply(clean_text)
-    posts_df["selftext"] = posts_df["selftext"].fillna("").astype(str).str.lower().apply(clean_text)
+    posts_df["title"] = posts_df["title"].fillna("").astype(str).str.lower().swifter.apply(clean_text)
+    posts_df["selftext"] = posts_df["selftext"].fillna("").astype(str).str.lower().swifter.apply(clean_text)
 
-    posts_df["lemmatized_title"] = posts_df["title"].apply(lemmatize_text)
-    posts_df["lemmatized_selftext"] = posts_df["selftext"].apply(lemmatize_text)
-    posts_df["stemmed_title"] = posts_df["title"].apply(stem_text)
-    posts_df["stemmed_selftext"] = posts_df["selftext"].apply(stem_text)
+    posts_df["lemmatized_title"] = posts_df["title"].swifter.apply(lemmatize_text)
+    posts_df["lemmatized_selftext"] = posts_df["selftext"].swifter.apply(lemmatize_text)
+    posts_df["stemmed_title"] = posts_df["title"].swifter.apply(stem_text)
+    posts_df["stemmed_selftext"] = posts_df["selftext"].swifter.apply(stem_text)
 
     # Output filenames
     output_file = PATH_FINAL_REPORTS_FILE
