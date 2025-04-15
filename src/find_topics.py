@@ -92,6 +92,15 @@ def train_bertopic(documents,
     return df, documents
 
 
+def filter_rows_by_colname():
+    df_post_filtered = df_keywords_report[
+        df_keywords_report["lemmatized_firearm_match"] & df_keywords_report["lemmatized_suicide_match"]
+    ]
+
+    df_firearm = df_keywords_report[df_keywords_report["lemmatized_firearm_match"]]
+    df_suicide = df_keywords_report[df_keywords_report["lemmatized_suicide_match"]]
+
+
 def parse_arguments(parser):
     parser.add_argument('--language', default='english', type=str)
     parser.add_argument('--stop_words', default='en', type=str)
@@ -117,15 +126,16 @@ except LookupError:
 # Loading data
 if args.load_preprocessed_dataset:
     df_keywords_report = pd.read_csv(PATH_FINAL_REPORTS_FILE)
+    df_firearm = df_keywords_report[df_keywords_report["regular_firearm_matches"].notna()]
+    df_suicide = df_keywords_report[df_keywords_report["regular_suicides_matches"].notna()]
 
     df_post_filtered = df_keywords_report[
-        df_keywords_report["lemmatized_firearm_match"] & df_keywords_report["lemmatized_suicide_match"]
+        df_keywords_report["regular_firearm_matches"].notna() &
+        df_keywords_report["regular_suicides_matches"].notna()
     ]
 
-    df_firearm = df_keywords_report[df_keywords_report["lemmatized_firearm_match"]]
-    df_suicide = df_keywords_report[df_keywords_report["lemmatized_suicide_match"]]
-
     filtered_ids = df_post_filtered["id"]
+
     # Filter posts
     df_raw = load_merged_dataset()
     df = df_raw[df_raw["id"].isin(filtered_ids)]
