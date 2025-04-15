@@ -135,7 +135,7 @@ if args.load_preprocessed_dataset:
     ]
 
     # filtered_ids = df_post_filtered["id"]
-    filtered_ids = df_firearm["id"]
+    filtered_ids = df_suicide["id"]
 
     # Filter posts
     df_raw = load_merged_dataset()
