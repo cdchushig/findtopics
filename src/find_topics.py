@@ -134,8 +134,8 @@ if args.load_preprocessed_dataset:
         df_keywords_report["regular_suicide_match_summary"].notna()
     ]
 
-    # filtered_ids = df_post_filtered["id"]
     filtered_ids = df_post_filtered["id"]
+    # filtered_ids = df_post_filtered["id"]
 
     # Filter posts
     df_raw = load_merged_dataset()
