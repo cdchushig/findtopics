@@ -5,8 +5,8 @@ PATH_PROJECT_DIR = Path(__file__).resolve().parents[1]
 PATH_KEYWORDS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms_reddit', 'LMS_Keywords_v3.2_Reddit_FINAL.xlsx')
 PATH_FAKE_FINAL_POSTS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'fake_final_posts.csv')
 PATH_PROJECT_DATA_FIREARMS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms')
-PATH_FINAL_REPORTS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'final_all_posts_with_matches.csv')
-PATH_FINAL_FILTERED_OUTPUT_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'lms_boolean_true_both_group_5.csv')
+PATH_FINAL_REPORTS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms_reddit', 'final_all_posts_with_matches.csv')
+PATH_FINAL_FILTERED_OUTPUT_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms_reddit', 'lms_boolean_true_both_group_5.csv')
 
 
 def load_dataset_with_meta_keywords(name_keyword_list: str):
