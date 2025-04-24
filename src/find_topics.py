@@ -9,7 +9,7 @@ from hdbscan import HDBSCAN
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
-from find_topics_utils import load_merged_dataset
+from find_topics_utils import load_merged_dataset, load_dataset_with_meta_keywords
 from find_topics_utils import PATH_FINAL_REPORTS_FILE
 import csv
 
@@ -111,6 +111,7 @@ def parse_arguments(parser):
     parser.add_argument('--cluster_selection_epsilon', default=0.5, type=float)
     parser.add_argument('--load_preprocessed_dataset', default=True, type=bool)
     parser.add_argument('--type_data', default='suicide_firearm', type=str)
+    parser.add_argument('--keyword_list', default='reddit', type=str)
     return parser.parse_args()
 
 
@@ -125,7 +126,7 @@ except LookupError:
 
 # Loading data
 if args.load_preprocessed_dataset:
-    df_keywords_report = pd.read_csv(PATH_FINAL_REPORTS_FILE)
+    df_keywords_report = load_dataset_with_meta_keywords(args.keyword_list)
     df_firearm = df_keywords_report[df_keywords_report["regular_firearm_match_summary"].notna()]
     df_suicide = df_keywords_report[df_keywords_report["regular_suicide_match_summary"].notna()]
 
@@ -135,10 +136,9 @@ if args.load_preprocessed_dataset:
     ]
 
     filtered_ids = df_post_filtered["id"]
-    # filtered_ids = df_post_filtered["id"]
 
     # Filter posts
-    df_raw = load_merged_dataset()
+    df_raw = load_merged_dataset(args.keyword_list)
     df = df_raw[df_raw["id"].isin(filtered_ids)]
     print('Raw data, number of posts: ', df_raw.shape)
     print('Filtered data: number of posts', df_post_filtered.shape)
@@ -150,7 +150,7 @@ if args.load_preprocessed_dataset:
     df_suicide.to_csv(PATH_POST_SUICIDE_FILTERED, index=False, encoding='utf-8', quotechar='"', quoting=csv.QUOTE_ALL)
 
 else:
-    df = load_merged_dataset()
+    df = load_merged_dataset(args.keyword_list)
 
 min_cluster_size = args.min_cluster_size
 min_samples = args.min_samples

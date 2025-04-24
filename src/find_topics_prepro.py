@@ -110,6 +110,7 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
                                terms_df: pd.DataFrame,
                                column_name_post: str = 'text',
                                n_jobs=1):
+
     fire_terms = extract_terms(terms_df["firearm_terms"])
     suicide_terms = extract_terms(terms_df["suicide_terms"])
     lemmatized_fire_terms = lemmatize_terms(fire_terms)
@@ -292,7 +293,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='topic modeler')
     args = parse_arguments(parser)
 
-    # multiprocessing.freeze_support()  # optional but safe
+    # Multiprocessing support
     os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
     dask.config.set(scheduler='threads', num_workers=args.n_jobs)
 
@@ -300,12 +301,9 @@ if __name__ == "__main__":
         load_and_merge_csv_files()
 
     # Loading raw data
-    df = load_merged_dataset()
+    df = load_merged_dataset(args.keyword_list)
 
     # Load keywords from Excel
     terms_df = pd.read_excel(PATH_KEYWORDS_FILE, sheet_name="Reddit")
     preprocessing_key_terms_v2(df, terms_df, n_jobs=args.n_jobs)
 
-    # posts_df = preprocessing_key_terms_v1(df, terms_df)
-    # Save the updated dataset
-    # posts_df.to_csv(PATH_FINAL_REPORTS_FILE, index=False, encoding='utf-8', quotechar='"', quoting=csv.QUOTE_ALL)
