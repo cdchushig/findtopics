@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 PATH_PROJECT_DIR = Path(__file__).resolve().parents[1]
-PATH_KEYWORDS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'LMS_Keywords_v3.2_Reddit_FINAL.xlsx')
+PATH_KEYWORDS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms_reddit', 'LMS_Keywords_v3.2_Reddit_FINAL.xlsx')
 PATH_FAKE_FINAL_POSTS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'fake_final_posts.csv')
 PATH_PROJECT_DATA_FIREARMS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms')
 PATH_FINAL_REPORTS_FILE = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'final_all_posts_with_matches.csv')
