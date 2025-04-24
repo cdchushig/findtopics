@@ -286,6 +286,7 @@ def preprocessing_key_terms_v1(posts_df: pd.DataFrame, terms_df: pd.DataFrame, c
 def parse_arguments(parser):
     parser.add_argument('--merge_data', default=False, type=bool)
     parser.add_argument('--n_jobs', default=1, type=int)
+    parser.add_argument('--keyword_list', default='reddit', type=str)
     return parser.parse_args()
 
 
