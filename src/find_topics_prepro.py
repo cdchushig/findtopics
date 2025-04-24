@@ -305,6 +305,6 @@ if __name__ == "__main__":
     df = load_merged_dataset(args.keyword_list)
 
     # Load keywords from Excel
-    terms_df = pd.read_excel(PATH_KEYWORDS_FILE, sheet_name="Reddit")
+    terms_df = pd.read_excel(PATH_KEYWORDS_FILE, sheet_name="terms")
     preprocessing_key_terms_v2(df, terms_df, n_jobs=args.n_jobs)
 
