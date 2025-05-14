@@ -108,6 +108,9 @@ def filter_rows_by_colname():
     df_suicide = df_keywords_report[df_keywords_report["lemmatized_suicide_match"]]
 
 
+
+
+
 def parse_arguments(parser):
     parser.add_argument('--language', default='english', type=str)
     parser.add_argument('--stop_words', default='en', type=str)
@@ -141,7 +144,8 @@ if args.load_preprocessed_dataset:
         df_keywords_report["regular_suicide_match_summary"].notna()
     ]
 
-    filtered_ids = df_post_filtered["id"]
+    filtered_ids = df_suicide["id"]
+    # filtered_ids = df_post_filtered["id"]
 
     # Filter posts
     df_raw = load_merged_dataset(args.keyword_list)
