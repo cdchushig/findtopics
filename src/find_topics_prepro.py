@@ -10,6 +10,7 @@ from tqdm import tqdm
 import os
 import dask
 import swifter
+from utils.preprocessing import remove_wrong_lines
 from find_topics_utils import load_merged_dataset, load_and_merge_csv_files
 from find_topics_utils import PATH_KEYWORDS_FILE, PATH_FINAL_REPORTS_FILE, PATH_FINAL_FILTERED_OUTPUT_FILE
 tqdm.pandas()  # Enables progress bar with .progress_apply()
@@ -159,15 +160,6 @@ def preprocessing_key_terms_v2(posts_df: pd.DataFrame,
             fire_list = stemmed_fire_terms
             suicide_list = stemmed_suicide_terms
 
-        # posts_df[f"{match_type}_firearm_matches"] = posts_df.progress_apply(
-        #     lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], fire_list),
-        #     axis=1,
-        # )
-        # posts_df[f"{match_type}_suicide_matches"] = posts_df.progress_apply(
-        #     lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], suicide_list),
-        #     axis=1,
-        # )
-
         posts_df[f"{match_type}_firearm_matches"] = posts_df.swifter.allow_dask_on_strings(enable=True).apply(
             lambda row: check_exact_phrase_match(row[title_col], row[selftext_col], fire_list),
             axis=1,
@@ -286,7 +278,7 @@ def preprocessing_key_terms_v1(posts_df: pd.DataFrame, terms_df: pd.DataFrame, c
 def parse_arguments(parser):
     parser.add_argument('--merge_data', default=False, type=bool)
     parser.add_argument('--n_jobs', default=1, type=int)
-    parser.add_argument('--keyword_list', default='reddit', type=str)
+    parser.add_argument('--keyword_list', default='twitter', type=str)
     return parser.parse_args()
 
 
@@ -297,9 +289,6 @@ if __name__ == "__main__":
     # Multiprocessing support
     os.environ["NUMEXPR_MAX_THREADS"] = str(args.n_jobs)
     dask.config.set(scheduler='threads', num_workers=args.n_jobs)
-
-    if args.merge_data:
-        load_and_merge_csv_files()
 
     # Loading raw data
     df = load_merged_dataset(args.keyword_list)
