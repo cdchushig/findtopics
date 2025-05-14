@@ -83,6 +83,7 @@ def train_bertopic(documents: pd.DataFrame,
     filename_topics = str(
         Path.joinpath(
             PATH_PROJECT_TOPICS,
+            type_data,
             'topics_{}_{}_{}_{}_{}_{}'.format(
                 dataset,
                 type_data,
@@ -111,11 +112,11 @@ def filter_rows_by_colname():
 def select_lms_data_for_training(type_data, df_post_filtered, df_firearm, df_suicide, df_keywords_report):
     if type_data == 'suicide':
         return df_suicide
-    elif type_data == 'firearm':
+    elif type_data == 'firearms':
         return df_firearm
-    elif type_data == 'suicide_firearm':
+    elif type_data == 'suicide_firearms':
         return df_post_filtered
-    else:
+    else: # all
         return df_keywords_report
 
 
