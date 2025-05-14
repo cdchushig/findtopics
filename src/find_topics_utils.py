@@ -14,7 +14,6 @@ def load_dataset_with_meta_keywords(name_keyword_list: str):
                                       'data', 'firearms_{}'.format(name_keyword_list),
                                       'final_all_posts_with_matches.csv'
                                       )
-    print('xxxx', path_keyword_list)
     df_keywords_report = pd.read_csv(path_keyword_list)
     return df_keywords_report
 
@@ -45,7 +44,7 @@ def load_and_merge_csv_files():
     df_merged.to_parquet(output_file, index=False, engine='pyarrow')
 
 
-def load_merged_dataset(str_keyword_list: str):
+def load_merged_dataset(str_keyword_list: str) -> pd.DataFrame:
     path_project_data_firearms = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms_{}'.format(str_keyword_list))
     parquet_file = path_project_data_firearms / "merged_vet_data.parquet"
     df_data = pd.read_parquet(parquet_file, engine='pyarrow')

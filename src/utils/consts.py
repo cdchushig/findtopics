@@ -5,7 +5,7 @@ PATH_PROJECT_DIR = Path(__file__).resolve().parents[2]
 PATH_PROJECT_DATA = Path.joinpath(PATH_PROJECT_DIR, 'data')
 PATH_PROJECT_DATA_PSYCHOTHERAPY = Path.joinpath(PATH_PROJECT_DIR, 'data', 'psychotherapy')
 PATH_PROJECT_DATA_ADDICTIONS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'addictions')
-PATH_PROJECT_DATA_FIREARMS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms')
+PATH_PROJECT_DATA_FIREARMS = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms_twitter')
 
 PATH_PROJECT_REPORTS = Path.joinpath(PATH_PROJECT_DIR, 'reports')
 PATH_PROJECT_MODELS = Path.joinpath(PATH_PROJECT_DIR, 'reports', 'models')

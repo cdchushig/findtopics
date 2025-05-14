@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[17]:
-
-
-import numpy as np 
+import numpy as np
 import pandas as pd 
 import tensorflow as tf
 import tensorflow.keras.backend as K
@@ -17,9 +11,6 @@ from ktrain import text
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
-
-
-# In[18]:
 import googletrans
 from googletrans import Translator
 from TweetNormalizer import normalizeTweet
