@@ -108,7 +108,15 @@ def filter_rows_by_colname():
     df_suicide = df_keywords_report[df_keywords_report["lemmatized_suicide_match"]]
 
 
-
+def select_lms_data_for_training(type_data, df_post_filtered, df_firearm, df_suicide, df_keywords_report):
+    if type_data == 'suicide':
+        return df_suicide
+    elif type_data == 'firearm':
+        return df_firearm
+    elif type_data == 'suicide_firearm':
+        return df_post_filtered
+    else:
+        return df_keywords_report
 
 
 def parse_arguments(parser):
@@ -144,8 +152,8 @@ if args.load_preprocessed_dataset:
         df_keywords_report["regular_suicide_match_summary"].notna()
     ]
 
-    filtered_ids = df_suicide["id"]
-    # filtered_ids = df_post_filtered["id"]
+    df_for_training = select_lms_data_for_training(args.type_data, df_post_filtered, df_firearm, df_suicide, df_keywords_report)
+    filtered_ids = df_for_training["id"]
 
     # Filter posts
     df_raw = load_merged_dataset(args.keyword_list)
