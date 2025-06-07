@@ -13,6 +13,9 @@ import csv
 import warnings
 import logging
 import coloredlogs
+import csv
+
+from plotter import text_eda_summary, plot_tweets_per_year
 
 from find_topics_utils import load_merged_dataset, load_dataset_with_meta_keywords
 
@@ -29,6 +32,10 @@ PATH_POST_SUICIDE_FILTERED = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms',
 PATH_POST_FIREARM_FILTERED = Path.joinpath(PATH_PROJECT_DIR, 'data', 'firearms', 'post_firearm_filtered.csv')
 
 
+def has_match(df, cols):
+    return df[cols].fillna('').apply(lambda row: any(len(str(cell)) > 0 for cell in row), axis=1)
+
+
 def train_bertopic(documents: pd.DataFrame,
                    min_cluster_size: int,
                    min_samples: int,
@@ -41,6 +48,8 @@ def train_bertopic(documents: pd.DataFrame,
 
     print('Training with ', documents.shape)
     documents['text'] = documents['text'].astype(str)
+
+    summary = text_eda_summary(documents, 'text')
 
     embedding_model = SentenceTransformer(EMBEDDING_MODEL_SENTENCE)
     representation_model = KeyBERTInspired(top_n_words=20, nr_repr_docs=10, random_state=0)
@@ -130,7 +139,7 @@ def parse_arguments(parser):
     parser.add_argument('--cluster_selection_epsilon', default=0.5, type=float)
     parser.add_argument('--load_preprocessed_dataset', default=True, type=bool)
     parser.add_argument('--type_data', default='suicide_firearm', type=str)
-    parser.add_argument('--keyword_list', default='reddit', type=str)
+    parser.add_argument('--keyword_list', default='twitter', type=str)
     return parser.parse_args()
 
 
@@ -145,15 +154,28 @@ except LookupError:
 
 if args.load_preprocessed_dataset:
     df_keywords_report = load_dataset_with_meta_keywords(args.keyword_list)
-    df_firearm = df_keywords_report[df_keywords_report["regular_firearm_match_summary"].notna()]
-    df_suicide = df_keywords_report[df_keywords_report["regular_suicide_match_summary"].notna()]
 
-    df_post_filtered = df_keywords_report[
-        df_keywords_report["regular_firearm_match_summary"].notna() &
-        df_keywords_report["regular_suicide_match_summary"].notna()
+    firearm_cols = [
+        "regular_firearm_match_summary",
+        "lemmatized_firearm_match_summary",
+        "stemmed_firearm_match_summary"
+    ]
+    suicide_cols = [
+        "regular_suicide_match_summary",
+        "lemmatized_suicide_match_summary",
+        "stemmed_suicide_match_summary"
     ]
 
-    df_for_training = select_lms_data_for_training(args.type_data, df_post_filtered, df_firearm, df_suicide, df_keywords_report)
+    # Identify which posts match firearm and/or suicide keywords
+    firearm_match = has_match(df_keywords_report, firearm_cols)
+    suicide_match = has_match(df_keywords_report, suicide_cols)
+
+    df_firearm = df_keywords_report[firearm_match]
+    df_suicide = df_keywords_report[suicide_match]
+    df_post_filtered = df_keywords_report[firearm_match & suicide_match]
+
+    df_for_training = select_lms_data_for_training(args.type_data, df_post_filtered, df_firearm, df_suicide,
+                                                   df_keywords_report)
     filtered_ids = df_for_training["id"]
 
     # Filter posts

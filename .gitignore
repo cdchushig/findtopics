@@ -18,6 +18,8 @@ __pycache__
 *.npy
 *.ipynb
 *.xml
+# Ignore LibreOffice/OpenOffice lock files
+.~lock.*.csv#
 
 venv311/
 data/
