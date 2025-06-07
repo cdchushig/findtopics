@@ -15,7 +15,7 @@ import logging
 import coloredlogs
 import csv
 
-from plotter import text_eda_summary, plot_tweets_per_year
+# from plotter import text_eda_summary, plot_tweets_per_year
 
 from find_topics_utils import load_merged_dataset, load_dataset_with_meta_keywords
 
@@ -49,7 +49,7 @@ def train_bertopic(documents: pd.DataFrame,
     print('Training with ', documents.shape)
     documents['text'] = documents['text'].astype(str)
 
-    summary = text_eda_summary(documents, 'text')
+    # summary = text_eda_summary(documents, 'text')
 
     embedding_model = SentenceTransformer(EMBEDDING_MODEL_SENTENCE)
     representation_model = KeyBERTInspired(top_n_words=20, nr_repr_docs=10, random_state=0)
