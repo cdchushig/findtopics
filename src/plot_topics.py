@@ -13,7 +13,7 @@ emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-e
 def save_emotion_file(ddf, type_dataset):
     str_filename_emotions = '{}_{}.csv'.format('emotions', type_dataset)
     path_data_emotions = Path.joinpath(cons.PATH_PROJECT_REPORTS, 'topics', type_dataset, str_filename_emotions)
-    ddf.to_csv(path_data_emotions, engine="pyarrow", index=False)
+    ddf.to_csv(path_data_emotions, index=False)
 
 
 def load_topics_files(type_dataset):
