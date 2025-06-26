@@ -2,6 +2,7 @@ import pandas as pd
 import argparse
 import utils.consts as cons
 from pathlib import Path
+import seaborn as sns
 import matplotlib.pyplot as plt
 import dask.dataframe as dd
 
@@ -13,7 +14,20 @@ emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-e
 def save_emotion_file(ddf, type_dataset):
     str_filename_emotions = '{}_{}.csv'.format('emotions', type_dataset)
     path_data_emotions = Path.joinpath(cons.PATH_PROJECT_REPORTS, 'topics', type_dataset, str_filename_emotions)
-    ddf.to_csv(path_data_emotions, index=False)
+    df_result = ddf.compute()
+    df_result.to_csv(path_data_emotions, index=False)
+
+
+def plot_emotion_distribution(df, emotion_column="Emotion", title="Emotion Distribution", figsize=(10, 6)):
+    plt.figure(figsize=figsize)
+    sns.countplot(data=df, x=emotion_column, order=df[emotion_column].value_counts().index, palette="pastel")
+    plt.title(title)
+    plt.xlabel("Emotion")
+    plt.ylabel("Number of Tweets")
+    plt.xticks(rotation=45)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
 
 
 def load_topics_files(type_dataset):
