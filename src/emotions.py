@@ -24,7 +24,7 @@ filename_tweets_topics_language = str(
         '{}_otros_topics.csv'.format(args.language))
 )
 
-df_topics = pd.read_csv(filename_tweets_topics_language)
+# df_topics = pd.read_csv(filename_tweets_topics_language)
 
 
 emotion_analyzer = create_analyzer(task="emotion", lang="es")

@@ -19,6 +19,10 @@ DATASET_NAME_NARRATIVE_THERAPY = 'narrative_therapy_topic'
 DATASET_NAME_FAMILY_COUPLE_THERAPY = 'familycouple_therapy_merged_topic'
 DATASET_NAME_ACCEPTANCE_COMMITMENT_THERAPY = 'acceptance_commitment_therapy_topic'
 
+FILENAME_DATA_TOPICS_FIREARMS = 'topics_firearms_firearms_english_10000_1000_0.5'
+FILENAME_DATA_TOPICS_SUICIDE = 'topics_firearms_suicide_english_200_40_0.1'
+FILENAME_DATA_TOPICS_SUICIDE_FIREARMS = 'topics_firearms_suicide_firearms_english_200_40_0.1'
+
 DICT_DATASETS_THERAPY = {
     'cognitive': DATASET_NAME_COGNITIVE_BEHAVIOURAL_THERAPY,
     'psycho': DATASET_NAME_PSYCHO_THERAPY,
