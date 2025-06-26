@@ -3,9 +3,17 @@ import argparse
 import utils.consts as cons
 from pathlib import Path
 import matplotlib.pyplot as plt
+import dask.dataframe as dd
+
 from transformers import pipeline
 
 emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
+
+
+def save_emotion_file(ddf, type_dataset):
+    str_filename_emotions = '{}_{}.parquet'.format('emotions', type_dataset)
+    path_data_emotions = Path.joinpath(cons.PATH_PROJECT_REPORTS, 'topics', type_dataset, str_filename_emotions)
+    ddf.to_parquet(path_data_emotions, engine="pyarrow", index=False)
 
 
 def load_topics_files(type_dataset):
@@ -104,6 +112,9 @@ df_match_descriptions = get_topic_descriptions(df_topic_descriptions, list_id_to
 print(df_match_descriptions)
 # plot_topics_temporal_evolution(df_topic_tweets, list_id_topics_per_dataset, df_match_descriptions, resolution=args.resolution)
 
+# df_topic_tweets["Emotion"] = df_topic_tweets["text"].apply(get_top_emotion)
+# print(df_topic_tweets)
 
-df_topic_tweets["Emotion"] = df_topic_tweets["text"].apply(get_top_emotion)
-print(df_topic_tweets)
+ddf = dd.from_pandas(df_topic_tweets, npartitions=args.n_jobs)
+ddf["Emotion"] = ddf["text"].map_partitions(lambda partition: partition.apply(get_top_emotion), meta=('Emotion', 'object'))
+save_emotion_file(ddf, args.type_dataset)
