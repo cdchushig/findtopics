@@ -173,6 +173,12 @@ def get_top_emotion(text):
 
 
 def generate_emotions(df_topic_tweets, n_jobs):
+
+    print('xxxxxx')
+    print(df_topic_tweets.columns)
+    print(df_topic_tweets.head())
+    print('xxxxxx')
+
     ddf = dd.from_pandas(df_topic_tweets, npartitions=n_jobs)
     ddf["Emotion"] = ddf["text"].map_partitions(
         lambda partition: partition.apply(get_top_emotion), meta=('Emotion', 'object')
