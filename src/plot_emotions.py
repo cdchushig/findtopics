@@ -75,7 +75,7 @@ def get_id_topics_for_type_dataset(type_dataset):
 
 
 def get_topic_descriptions(df_topic_descriptions, list_id_topics):
-    df_filtered = df_topic_descriptions[df_topic_descriptions["Topic"].isin(list_id_topics)][["Topic", "Label"]]
+    df_filtered = df_topic_descriptions[df_topic_descriptions["Topic"].isin(list_id_topics)][["Topic", "Label", "text"]]
     return df_filtered
 
 
