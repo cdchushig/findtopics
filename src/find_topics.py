@@ -174,12 +174,13 @@ if args.load_preprocessed_dataset:
     df_suicide = df_keywords_report[suicide_match]
     df_post_filtered = df_keywords_report[firearm_match & suicide_match]
 
-    df_for_training = select_lms_data_for_training(args.type_data,
-                                                   df_post_filtered,
-                                                   df_firearm,
-                                                   df_suicide,
-                                                   df_keywords_report
-                                                   )
+    selected_df = args.type_data
+    df_for_training = {
+        'suicide': df_suicide,
+        'firearms': df_firearm,
+        'suicide_firearms': df_post_filtered
+    }
+
     filtered_ids = df_for_training["id"]
 
     # Filter posts
@@ -194,7 +195,8 @@ if args.load_preprocessed_dataset:
                             index=False,
                             encoding='utf-8',
                             quotechar='"',
-                            quoting=csv.QUOTE_ALL)
+                            quoting=csv.QUOTE_ALL
+                            )
     df_firearm.to_csv(PATH_POST_FIREARM_FILTERED, index=False, encoding='utf-8', quotechar='"', quoting=csv.QUOTE_ALL)
     df_suicide.to_csv(PATH_POST_SUICIDE_FILTERED, index=False, encoding='utf-8', quotechar='"', quoting=csv.QUOTE_ALL)
 
