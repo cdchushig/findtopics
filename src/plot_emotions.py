@@ -4,7 +4,7 @@ import utils.consts as cons
 from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
-# import dask.dataframe as dd
+import dask.dataframe as dd
 from transformers import pipeline
 emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
 
@@ -204,8 +204,7 @@ print(df_match_descriptions)
 plot_topics_temporal_evolution(df_topic_tweets, args.type_dataset, list_id_topics_per_dataset, df_match_descriptions, resolution=args.resolution)
 
 # Generate emotions
-# generate_emotions(df_topic_tweets, args.n_jobs)
-
+generate_emotions(df_match_descriptions, args.n_jobs)
 df_emotions = load_emotion_files(args.type_dataset)
 path_emotions = str(Path.joinpath(cons.PATH_PROJECT_REPORTS, 'emotions', 'df_emotions_{}.csv'.format(args.type_dataset)))
 df_emotions.to_csv(path_emotions, index=False)
