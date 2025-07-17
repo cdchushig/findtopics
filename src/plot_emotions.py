@@ -75,7 +75,7 @@ def get_id_topics_for_type_dataset(type_dataset):
 
 
 def get_topic_descriptions(df_topic_descriptions, list_id_topics):
-    df_filtered = df_topic_descriptions[df_topic_descriptions["Topic"].isin(list_id_topics)][["Topic", "Label", "text"]]
+    df_filtered = df_topic_descriptions[df_topic_descriptions["Topic"].isin(list_id_topics)][["Topic", "Label"]]
     return df_filtered
 
 
@@ -172,12 +172,8 @@ def get_top_emotion(text):
         return "Error"
 
 
-def generate_emotions(df_topic_tweets, n_jobs):
-
-    print('xxxxxx')
-    print(df_topic_tweets.columns)
-    print(df_topic_tweets.head())
-    print('xxxxxx')
+def generate_emotions(df_tweets, ids_topics, n_jobs):
+    df_topic_tweets = df_tweets[df_tweets["Topic"].isin(ids_topics)]
 
     ddf = dd.from_pandas(df_topic_tweets, npartitions=n_jobs)
     ddf["Emotion"] = ddf["text"].map_partitions(
@@ -210,7 +206,7 @@ print(df_match_descriptions)
 plot_topics_temporal_evolution(df_topic_tweets, args.type_dataset, list_id_topics_per_dataset, df_match_descriptions, resolution=args.resolution)
 
 # Generate emotions
-generate_emotions(df_match_descriptions, args.n_jobs)
+generate_emotions(df_topic_tweets, list_id_topics_per_dataset, args.n_jobs)
 df_emotions = load_emotion_files(args.type_dataset)
 path_emotions = str(Path.joinpath(cons.PATH_PROJECT_REPORTS, 'emotions', 'df_emotions_{}.csv'.format(args.type_dataset)))
 df_emotions.to_csv(path_emotions, index=False)
