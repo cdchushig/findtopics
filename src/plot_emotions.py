@@ -207,5 +207,8 @@ plot_topics_temporal_evolution(df_topic_tweets, args.type_dataset, list_id_topic
 # generate_emotions(df_topic_tweets, args.n_jobs)
 
 df_emotions = load_emotion_files(args.type_dataset)
+path_emotions = str(Path.joinpath(cons.PATH_PROJECT_REPORTS, 'emotions', 'df_emotions_{}.csv'.format(args.type_dataset)))
+df_emotions.to_csv(path_emotions, index=False)
+
 plot_emotion_distribution(df_emotions, args.type_dataset, emotion_column='Emotion')
 plot_emotions_temporal_evolution(df_emotions, args.type_dataset, resolution=args.resolution)
