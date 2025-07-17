@@ -175,12 +175,13 @@ if args.load_preprocessed_dataset:
     df_post_filtered = df_keywords_report[firearm_match & suicide_match]
 
     selected_df = args.type_data
-    df_for_training = {
+    dict_dfs_for_training = {
         'suicide': df_suicide,
         'firearms': df_firearm,
         'suicide_firearms': df_post_filtered
     }
 
+    df_for_training = dict_dfs_for_training[selected_df]
     filtered_ids = df_for_training["id"]
 
     # Filter posts
