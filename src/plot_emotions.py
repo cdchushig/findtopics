@@ -4,10 +4,8 @@ import utils.consts as cons
 from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
-import dask.dataframe as dd
-
-from transformers import pipeline
-
+# import dask.dataframe as dd
+# from transformers import pipeline
 emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
 
 
@@ -18,7 +16,14 @@ def save_emotion_file(ddf, type_dataset):
     df_result.to_csv(path_data_emotions, index=False)
 
 
-def plot_emotion_distribution(df, emotion_column="Emotion", title="Emotion Distribution", figsize=(10, 6)):
+def plot_emotion_distribution(df,
+                              type_dataset,
+                              emotion_column="Emotion",
+                              title="Emotion Distribution",
+                              figsize=(10, 6),
+                              flag_save_figure=True
+                              ):
+
     plt.figure(figsize=figsize)
     sns.countplot(data=df, x=emotion_column, order=df[emotion_column].value_counts().index, palette="pastel")
     plt.title(title)
@@ -27,8 +32,18 @@ def plot_emotion_distribution(df, emotion_column="Emotion", title="Emotion Distr
     plt.xticks(rotation=45)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.show()
 
+    if flag_save_figure:
+        path_figure = str(Path.joinpath(cons.PATH_PROJECT_REPORTS_FIGURES, 'emotion_distribution_{}'.format(type_dataset)))
+        plt.savefig(path_figure)
+    else:
+        plt.show()
+
+def load_emotion_files(type_dataset):
+    path_data_emotions = Path.joinpath(cons.PATH_PROJECT_REPORTS, 'topics', type_dataset,
+                                       '{}_{}.csv'.format('emotions', type_dataset))
+    df = pd.read_csv(path_data_emotions)
+    return df
 
 def load_topics_files(type_dataset):
 
@@ -93,6 +108,45 @@ def plot_topics_temporal_evolution(df_tweets, ids_topics, df_match_descriptions,
     plt.tight_layout()
     plt.show()
 
+
+def plot_emotions_temporal_evolution(df,
+                                     type_dataset,
+                                     date_column="date",
+                                     emotion_column="Emotion",
+                                     resolution='month',
+                                     flag_save_figure=True
+                                     ):
+
+    df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
+
+    if resolution == "month":
+        df["time"] = df[date_column].dt.to_period("M").dt.to_timestamp()
+        title = "Monthly Tweet Count by Topic"
+    elif resolution == "year":
+        df["time"] = df[date_column].dt.to_period("Y").dt.to_timestamp()
+        title = "Yearly Tweet Count by Topic"
+    else:
+        raise ValueError("Resolution must be either 'month' or 'year'")
+
+    grouped = df.groupby(["time", emotion_column]).size().reset_index(name="tweet_count")
+    pivot_df = grouped.pivot(index="time", columns=emotion_column, values="tweet_count").fillna(0)
+
+    pivot_df.plot(kind="line", marker="o", figsize=(14, 6))
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("Number of Tweets")
+    plt.grid(True)
+    plt.legend(title="Topic", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
+
+    if flag_save_figure:
+        path_figure = str(Path.joinpath(cons.PATH_PROJECT_REPORTS_FIGURES, 'emotions_temporal_{}'.format(type_dataset)))
+        plt.savefig(path_figure)
+        plt.close()
+    else:
+        plt.show()
+
+
 def get_top_emotion(text):
     try:
         results = emotion_classifier(text)
@@ -101,6 +155,14 @@ def get_top_emotion(text):
         return top_emotion['label']
     except Exception as e:
         return "Error"
+
+
+def generate_emotions(df_topic_tweets, n_jobs):
+    ddf = dd.from_pandas(df_topic_tweets, npartitions=n_jobs)
+    ddf["Emotion"] = ddf["text"].map_partitions(
+        lambda partition: partition.apply(get_top_emotion), meta=('Emotion', 'object')
+    )
+    save_emotion_file(ddf, args.type_dataset)
 
 
 def parse_arguments(parser):
@@ -117,7 +179,7 @@ def parse_arguments(parser):
     return parser.parse_args()
 
 
-parser = argparse.ArgumentParser(description='topic modeler')
+parser = argparse.ArgumentParser(description='emotion modeler')
 args = parse_arguments(parser)
 
 df_topic_descriptions, df_topic_tweets = load_topics_files(args.type_dataset)
@@ -126,9 +188,9 @@ df_match_descriptions = get_topic_descriptions(df_topic_descriptions, list_id_to
 print(df_match_descriptions)
 # plot_topics_temporal_evolution(df_topic_tweets, list_id_topics_per_dataset, df_match_descriptions, resolution=args.resolution)
 
-# df_topic_tweets["Emotion"] = df_topic_tweets["text"].apply(get_top_emotion)
-# print(df_topic_tweets)
+# Generate emotions
+# generate_emotions(df_topic_tweets, args.n_jobs)
 
-ddf = dd.from_pandas(df_topic_tweets, npartitions=args.n_jobs)
-ddf["Emotion"] = ddf["text"].map_partitions(lambda partition: partition.apply(get_top_emotion), meta=('Emotion', 'object'))
-save_emotion_file(ddf, args.type_dataset)
+df_emotions = load_emotion_files(args.type_dataset)
+plot_emotion_distribution(df_emotions, args.type_dataset, emotion_column='Emotion')
+plot_emotions_temporal_evolution(df_emotions, args.type_dataset, resolution=args.resolution)

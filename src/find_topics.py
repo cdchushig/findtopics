@@ -174,8 +174,12 @@ if args.load_preprocessed_dataset:
     df_suicide = df_keywords_report[suicide_match]
     df_post_filtered = df_keywords_report[firearm_match & suicide_match]
 
-    df_for_training = select_lms_data_for_training(args.type_data, df_post_filtered, df_firearm, df_suicide,
-                                                   df_keywords_report)
+    df_for_training = select_lms_data_for_training(args.type_data,
+                                                   df_post_filtered,
+                                                   df_firearm,
+                                                   df_suicide,
+                                                   df_keywords_report
+                                                   )
     filtered_ids = df_for_training["id"]
 
     # Filter posts

@@ -63,7 +63,8 @@ def train_bertopic(documents,
                 min_cluster_size,
                 min_samples,
                 cluster_selection_epsilon
-            ))
+            )
+        )
     )
 
     topic_model.save(filename_model, serialization="pickle")
