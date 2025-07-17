@@ -147,8 +147,8 @@ def text_eda_summary(df, column):
 
 
 # path_topic_tweets = '/home/cdchushig/kawsai/findtopics/reports/topics/suicide_firearms/' + 'topics_firearms_suicide_firearms_english_200_40_0.1_topics.csv'
-# path_topic_tweets = '/home/cdchushig/kawsai/findtopics/reports/topics/suicide/' + 'topics_firearms_suicide_english_40_200_0.1_topics.csv'
-path_topic_tweets = '/home/cdchushig/kawsai/findtopics/reports/topics/firearms/' + 'topics_firearms_firearms_english_10000_1000_0.5_topics.csv'
+path_topic_tweets = '/home/cdchushig/kawsai/findtopics/reports/topics/suicide/' + 'topics_firearms_suicide_english_200_40_0.1_topics.csv'
+# path_topic_tweets = '/home/cdchushig/kawsai/findtopics/reports/topics/firearms/' + 'topics_firearms_firearms_english_10000_1000_0.5_topics.csv'
 
 dfx = pd.read_csv(path_topic_tweets)
 print(dfx)

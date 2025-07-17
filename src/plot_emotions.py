@@ -5,7 +5,7 @@ from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
 # import dask.dataframe as dd
-# from transformers import pipeline
+from transformers import pipeline
 emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
 
 
@@ -79,7 +79,16 @@ def get_topic_descriptions(df_topic_descriptions, list_id_topics):
     return df_filtered
 
 
-def plot_topics_temporal_evolution(df_tweets, ids_topics, df_match_descriptions, date_column="date", topic_column="Topic", resolution='month'):
+def plot_topics_temporal_evolution(df_tweets,
+                                   type_dataset,
+                                   ids_topics,
+                                   df_match_descriptions,
+                                   date_column="date",
+                                   topic_column="Topic",
+                                   resolution='month',
+                                   flag_save_figure=True
+                                   ):
+
     df = df_tweets[df_tweets["Topic"].isin(ids_topics)]
     df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
 
@@ -106,7 +115,13 @@ def plot_topics_temporal_evolution(df_tweets, ids_topics, df_match_descriptions,
     plt.grid(True)
     plt.legend(title="Topic", bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
-    plt.show()
+
+    if flag_save_figure:
+        path_figure = str(Path.joinpath(cons.PATH_PROJECT_REPORTS_FIGURES, 'topics_temporal_{}'.format(type_dataset)))
+        plt.savefig(path_figure)
+        plt.close()
+    else:
+        plt.show()
 
 
 def plot_emotions_temporal_evolution(df,
@@ -186,7 +201,7 @@ df_topic_descriptions, df_topic_tweets = load_topics_files(args.type_dataset)
 list_id_topics_per_dataset = get_id_topics_for_type_dataset(args.type_dataset)
 df_match_descriptions = get_topic_descriptions(df_topic_descriptions, list_id_topics_per_dataset)
 print(df_match_descriptions)
-# plot_topics_temporal_evolution(df_topic_tweets, list_id_topics_per_dataset, df_match_descriptions, resolution=args.resolution)
+plot_topics_temporal_evolution(df_topic_tweets, args.type_dataset, list_id_topics_per_dataset, df_match_descriptions, resolution=args.resolution)
 
 # Generate emotions
 # generate_emotions(df_topic_tweets, args.n_jobs)
